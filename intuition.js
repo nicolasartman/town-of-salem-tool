@@ -21,17 +21,18 @@
 				return clickEvent && clickEvent.which === 3;
 			}
 
-      $scope.players = _.map(_.range(0, 15), function (number) {
-      	return {
-      		number: number,
-					isSuspicious: false,
-					votes: {},
-					nominations: {}
-      	};
-      });
-
-			// Initially there is no player being edited.
-			$scope.playerBeingEdited = null;
+			var initializePlayers = function () {
+				$scope.playerBeingEdited = null;
+				$scope.players = _.map(_.range(0, 15), function (number) {
+					return {
+						number: number,
+						isSuspicious: false,
+						votes: {},
+						nominations: {},
+						alignment: null
+					};
+				});
+			};
 
       $scope.alignmentMode = false;
 
@@ -39,7 +40,7 @@
         // if it's a right click
         if (event.which === 3) {
           $scope.alignmentMode = !$scope.alignmentMode;
-          $scope.$broadcast('resetReads');
+					initializePlayers();
         }
       };
 
@@ -57,6 +58,14 @@
 			var markPlayerAsDead = function (player) {
 				player.isDead = !player.isDead;
 			};
+			
+			var markPlayerAlignment = function (player, alignment) {
+				if (player.alignment !== alignment) {
+					player.alignment = alignment;
+				} else {
+					player.alignment = null;
+				}
+			}
 
 			this.actOnPlayer = function (clickEvent, player) {
 				// Left click
@@ -70,6 +79,12 @@
 			}
 
 			this.markVote = function (clickEvent, votingPlayer, accusedPlayer) {
+				// Players can't vote on themselves, so replace that with
+				// the ability to mark that player as good or bad
+				if (votingPlayer === accusedPlayer) {
+					return markPlayerAlignment(accusedPlayer, 'town');
+				}
+				
 				if (isLeftClick(clickEvent)) {
 					votingPlayer.votes[accusedPlayer.number] = votingPlayer.votes[accusedPlayer.number] !== 'guilty' ? 'guilty': null;
 				}
@@ -80,8 +95,15 @@
 			}
 
 			this.markNomination = function (playerBeingNominated, nominator) {
-				playerBeingNominated[nominator.number] = !playerBeingNominated[nominator.number];
+				// Players can't vote on themselves, so replace that with
+				// the ability to mark that player as good or bad
+				if (playerBeingNominated === nominator) {
+					return markPlayerAlignment(nominator, 'mafia');
+				}
+				playerBeingNominated.nominations[nominator.number] = !playerBeingNominated.nominations[nominator.number];
 			}
+			
+			initializePlayers();
     }])
 
 
@@ -90,8 +112,8 @@
         '<div class="role-striker-container" ng-controller="roleStriker as playerController" ng-class="{\'alignment-mode\': alignmentMode}">' +
           '<div class="drag-handle" ng-mousedown="toggleAlignmentMode($event)"></div>' +
           '<div class="players">' +
-            '<div class="player" ng-repeat="player in players" ng-class="{\'editable\': playerBeingEdited !== null, \'player-being-edited\': player === playerBeingEdited, \'is-dead\': player.isDead, \'is-suspicious\': player.isSuspicious}">' +
-							'<div class="player-control nomination" ng-click="{\'is-nominating\': playerBeingEdited.nominations[player.number]}" ng-click="markNomination(playerBeingEdited, player)"></div>' +
+            '<div class="player" ng-repeat="player in players" ng-class="{\'editable\': playerBeingEdited !== null, \'player-being-edited\': player === playerBeingEdited, \'is-dead\': player.isDead, \'is-suspicious\': player.isSuspicious, \'is-town\': player.alignment === \'town\', \'is-mafia\': player.alignment === \'mafia\'}">' +
+							'<div class="player-control nomination" ng-class="{\'is-nominating\': playerBeingEdited.nominations[player.number]}" ng-click="playerController.markNomination(playerBeingEdited, player)"></div>' +
 							'<div class="player-control vote" ng-class="{\'guilty\': playerBeingEdited.votes[player.number] == \'guilty\', \'innocent\': playerBeingEdited.votes[player.number] == \'innocent\'}" ng-mousedown="playerController.markVote($event, playerBeingEdited, player)"></div>' +
 							'<div class="player-control player-number" ng-mousedown="playerController.actOnPlayer($event, player)"></div>' +
               '<div class="player-read" ng-click="player.isSuspicious = !player.isSuspicious"></div>' +
@@ -149,8 +171,8 @@
         rel: 'stylesheet',
         type: 'text/css',
         // TODO: CHANGE BEFORE LOCAL DEV!!!!!!!!!!!!!!!!!
-        // href: 'http://true-reality.net/cdn/intuition.css'
-        href: 'http://localhost:8777/intuition.css'
+        href: 'http://true-reality.net/cdn/intuition.css'
+        // href: 'http://localhost:8777/intuition.css'
       }).appendTo('head');
 
       // Kick it off

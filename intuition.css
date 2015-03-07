@@ -29,6 +29,7 @@
   background-color: #AAA;
 }
 
+
 .players {
   height: 100%;
   width: 100%;
@@ -47,38 +48,53 @@
 }
 
 .player-control {
-  float: left;
+	float: left;
   width: 10%;
   height: 100%;
 	border: 1px solid gray;
 }
 
-.player.player-being-edited .player-control.player-number {
-	box-shadow: inset 0px 0px 0px 3px black;
-}
 
-.player-control.nomination {
+.player-control.nomination, .player-control.vote {
 	background: black;
 }
-.player.player-being-edited .nomination.is-nominating {
+.player.editable .nomination.is-nominating {
 	background: yellow;
 }
 
-.player.editable .player-control.vote {
+.player.editable .vote {
 	background: cyan;
 }
-.player.editable .player-control.vote.guilty {
+.player.editable .vote.guilty {
 	background: red;
 }
-.player.editable .player-control.vote.innocent {
+.player.editable .vote.innocent {
 	background: #00FF00;
 }
 
+.player.player-being-edited .player-number {
+	box-shadow: inset 0px 0px 0px 3px black;
+}
+.player.is-town .player-number {
+	background: rgba(0, 255, 0, 0.25);
+}
+.player.is-mafia .player-number {
+	background: rgba(255, 0, 0, 0.25);
+}
+
+/* 
+ * Make the selected player's line controls behave differently since
+ * they can't vote for/nominate themselves
+ */
+.player.player-being-edited .vote,
+.player.player-being-edited .nomination {
+	background: #4E4219;
+}
+
 .player-read {
-  width: 100%;
+	margin-left: 30%;
   height: 100%;
-  padding-left: 20px;
 }
 .player.is-suspicious .player-read {
-  background-color: rgba(255, 255, 0, 0.25);	
+  background-color: rgba(255, 255, 0, 0.25);
 }
