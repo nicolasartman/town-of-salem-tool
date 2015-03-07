@@ -1,0 +1,25 @@
+{
+  "name": "town-of-salem-tool",
+  "version": "2.0.0",
+  "description": "A bookmarklet-bundled application that provides a game augmenting widget to track various pieces of info, such as player voting history and suspicious players",
+  "main": "intuition.js",
+  "dependencies": {
+    "connect": "^3.3.4",
+    "serve-static": "^1.9.1",
+    "uglify": "^0.1.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nicolasartman/town-of-salem-tool.git"
+  },
+  "author": "Nicolas Artman",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nicolasartman/town-of-salem-tool/issues"
+  },
+  "homepage": "https://github.com/nicolasartman/town-of-salem-tool"
+}
