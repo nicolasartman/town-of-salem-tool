@@ -14,7 +14,24 @@
     angular.module('intuition', [])
 
     .controller('roleStriker', ['$scope', function ($scope) {
-      $scope.roles = _.range(0, 15);
+			var isLeftClick = function (clickEvent) {
+				return clickEvent && clickEvent.which === 1;
+			}
+			var isRightClick = function (clickEvent) {
+				return clickEvent && clickEvent.which === 3;
+			}
+
+      $scope.players = _.map(_.range(0, 15), function (number) {
+      	return {
+      		number: number,
+					isSuspicious: false,
+					votes: {},
+					nominations: {}
+      	};
+      });
+
+			// Initially there is no player being edited.
+			$scope.playerBeingEdited = null;
 
       $scope.alignmentMode = false;
 
@@ -25,71 +42,59 @@
           $scope.$broadcast('resetReads');
         }
       };
+
+			// Set the player being edited to the given player,
+			// or exit edit mode if the player being edited has
+			// their edit button clicked again.
+			var editPlayer = function (player) {
+				if (player !== $scope.playerBeingEdited) {
+					$scope.playerBeingEdited = player;
+				} else {
+					$scope.playerBeingEdited = null;
+				}
+			};
+
+			var markPlayerAsDead = function (player) {
+				player.isDead = !player.isDead;
+			};
+
+			this.actOnPlayer = function (clickEvent, player) {
+				// Left click
+				if (isLeftClick(clickEvent)) {
+					editPlayer(player);
+				}
+				// Right click
+				else if (isRightClick(clickEvent)) {
+					markPlayerAsDead(player);
+				}
+			}
+
+			this.markVote = function (clickEvent, votingPlayer, accusedPlayer) {
+				if (isLeftClick(clickEvent)) {
+					votingPlayer.votes[accusedPlayer.number] = votingPlayer.votes[accusedPlayer.number] !== 'guilty' ? 'guilty': null;
+				}
+				else if (isRightClick(clickEvent)) {
+					votingPlayer.votes[accusedPlayer.number] = votingPlayer.votes[accusedPlayer.number] !== 'innocent' ? 'innocent': null;
+				}
+				console.log('voting player votes', votingPlayer.votes);
+			}
+
+			this.markNomination = function (playerBeingNominated, nominator) {
+				playerBeingNominated[nominator.number] = !playerBeingNominated[nominator.number];
+			}
     }])
 
-    // Read as in "My read on that player is that he's the Jester"
-    .controller('playerRead', ['$scope', function ($scope) {
-      var potentialReads = ['innocent', 'unknown', 'suspicious', 'guilty'];
-      var rolesForRead = {
-        'innocent': [
-          'BG', 'DOC', 'ESC', 'INV', 'JLR', 'LOO',
-          'MAY', 'MDM', 'RET', 'SHF', 'SPY', 'TRA',
-          'VET', 'VIG'
-        ],
-        'unknown': [],
-        'suspicious': [
-          'AMN', 'RSO', 'EXE', 'JES', 'SK', 'SVR', 'WW', 'WIT'
-        ],
-        'guilty': [
-          'BLA', 'CSG', 'CNS', 'DIS', 'FRA', 'GF', 'JAN', 'MAF'
-        ]
-      };
-      
-      
-      $scope.read = 'unknown';
-      $scope.role = null;
-      
-      $scope.$on('resetReads', function () {
-        $scope.read = 'unknown';
-        $scope.role = null;
-      });
-
-      $scope.changeRead = function (event) {
-        console.log('click event log', event.which);
-        // left click goes leftward through the potential reads, right click
-        // goes rightward
-        var currentReadNumber = _.indexOf(potentialReads, $scope.read);
-        if (event.which === 1) {
-          $scope.read = potentialReads[(currentReadNumber + 1) % potentialReads.length];
-        } else if (event.which === 3) {
-          // If we're about to go negative, preemptively wrap around to the
-          // max
-          if (currentReadNumber === 0) {
-            currentReadNumber = potentialReads.length;
-          }
-          $scope.read = potentialReads[(currentReadNumber - 1) % potentialReads.length];
-        }
-        // Clear the role whenever the read changes, since it may not be valid
-        // for the new read
-        $scope.role = null;
-      };
-      
-      $scope.getRolesForRead = function (read) {
-        return rolesForRead[read];
-      };
-    }]);
 
     // Add the widgets to the page then Bootstrap the app
     var roleStrikerWidget = $(
-        '<div class="role-striker-container" ng-controller="roleStriker" ng-class="{\'alignment-mode\': alignmentMode}">' +
+        '<div class="role-striker-container" ng-controller="roleStriker as playerController" ng-class="{\'alignment-mode\': alignmentMode}">' +
           '<div class="drag-handle" ng-mousedown="toggleAlignmentMode($event)"></div>' +
-          '<div class="role-names">' +
-            '<div class="role-name" ng-controller="playerRead" ng-repeat="role in roles">' +
-              '<div class="role-guess">' +
-                '<div class="role-guess-label" ng-class="\'role-guess-label-\' + read">{{role}}</div>' +
-                '<select class="role-guess-picker" ng-options="role for role in getRolesForRead(read)" ng-model="role"></select>' +
-              '</div>' +
-              '<div class="read" ng-class="\'read-\' + read" ng-mousedown="changeRead($event)"></div>' +
+          '<div class="players">' +
+            '<div class="player" ng-repeat="player in players" ng-class="{\'editable\': playerBeingEdited !== null, \'player-being-edited\': player === playerBeingEdited, \'is-dead\': player.isDead, \'is-suspicious\': player.isSuspicious}">' +
+							'<div class="player-control nomination" ng-click="{\'is-nominating\': playerBeingEdited.nominations[player.number]}" ng-click="markNomination(playerBeingEdited, player)"></div>' +
+							'<div class="player-control vote" ng-class="{\'guilty\': playerBeingEdited.votes[player.number] == \'guilty\', \'innocent\': playerBeingEdited.votes[player.number] == \'innocent\'}" ng-mousedown="playerController.markVote($event, playerBeingEdited, player)"></div>' +
+							'<div class="player-control player-number" ng-mousedown="playerController.actOnPlayer($event, player)"></div>' +
+              '<div class="player-read" ng-click="player.isSuspicious = !player.isSuspicious"></div>' +
             '</div>' +
           '</div>' +
         '</div>'

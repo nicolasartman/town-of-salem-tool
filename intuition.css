@@ -29,62 +29,56 @@
   background-color: #AAA;
 }
 
-.role-names {
+.players {
   height: 100%;
   width: 100%;
   padding-top: 10%;
   padding-bottom: 5%;
 }
 
-.role-names .role-name {
+.players .player {
   height: 6.66%;
 }
 
-.role-guess {
+.player.editable.is-dead .player-control.vote,
+.player.editable.is-dead .player-control.nomination,
+.player.is-dead .player-control.player-number {
+	background: gray;
+}
+
+.player-control {
   float: left;
-  width: 40px;
+  width: 10%;
   height: 100%;
-}
-.role-guess-label.role-guess-label-innocent {
-  color: rgb(0, 255, 0);
-}
-.role-guess-label.role-guess-label-suspicious {
-  color: rgb(255, 255, 0);
-}
-.role-guess-label.role-guess-label-guilty {
-  color: rgb(255, 0, 0);
+	border: 1px solid gray;
 }
 
-/* Swap the label for the picker on hover */
-.role-guess .role-guess-label {
-  background-color: rgba(0, 0, 0, 0.5);
-  height: 100%;
-}
-.role-guess:hover .role-guess-label {
-  display:none;
-}
-.role-guess .role-guess-picker {
-  display: none;
-}
-.role-guess:hover .role-guess-picker {
-  display: inline-block;
+.player.player-being-edited .player-control.player-number {
+	box-shadow: inset 0px 0px 0px 3px black;
 }
 
-.read {
+.player-control.nomination {
+	background: black;
+}
+.player.player-being-edited .nomination.is-nominating {
+	background: yellow;
+}
+
+.player.editable .player-control.vote {
+	background: cyan;
+}
+.player.editable .player-control.vote.guilty {
+	background: red;
+}
+.player.editable .player-control.vote.innocent {
+	background: #00FF00;
+}
+
+.player-read {
   width: 100%;
   height: 100%;
   padding-left: 20px;
 }
-.read.read-unknown {
-  background-color: transparent;
+.player.is-suspicious .player-read {
+  background-color: rgba(255, 255, 0, 0.25);	
 }
-.read.read-innocent {
-  background-color: rgba(0, 255, 0, 0.25);
-}
-.read.read-suspicious {
-  background-color: rgba(255, 255, 0, 0.25);
-}
-.read.read-guilty {
-  background-color: rgba(255, 0, 0, 0.25);
-}
-
