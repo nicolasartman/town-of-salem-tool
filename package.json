@@ -1,16 +1,17 @@
 {
   "name": "town-of-salem-tool",
-  "version": "2.0.0",
+  "version": "4.0.0",
   "description": "A bookmarklet-bundled application that provides a game augmenting widget to track various pieces of info, such as player voting history and suspicious players",
-  "main": "intuition.js",
+  "main": "loader.js",
   "dependencies": {
-    "connect": "^3.3.4",
     "serve-static": "^1.9.1",
-    "uglify": "^0.1.1"
+    "uglify": "^0.1.1",
+    "uglifyjs": "^2.4.10"
   },
   "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "bookmarklet": "./node_modules/uglifyjs/bin/uglifyjs loader.js -o dist/salem.bookmarklet.js",
+    "server": "browser-sync start --server --port 8777 --files=\"*.js, *.css, *.html\""
   },
   "repository": {
     "type": "git",
