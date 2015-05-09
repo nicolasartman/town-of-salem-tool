@@ -23,7 +23,7 @@
 			type: 'text/css',
 			href: window.location.href.indexOf('localhost') !== -1 ?
 				'/salem.css' :
-				'http://true-reality.net/cdn/salem.css'
+				'http://nicolasartman.com/salem/salem.css'
 		}).appendTo('head');
 		
 		// The town of salem page already has jquery in it, so we don't need to load that
@@ -35,7 +35,7 @@
 			return $.getScript(sourceUrl);
 		}).then(function () {
 			window.salemToolLibrariesFetched = true;
-			window.runTownOfSalemTool()
+			window.runTownOfSalemTool();
 		});
 	} else {
 		window.runTownOfSalemTool();

@@ -9,6 +9,10 @@
   z-index: 1000000;
 }
 
+.salem-tool-container .drag-handle {
+	cursor: move;
+}
+
 .salem-tool-container.alignment-mode {
   border-color: cyan;
 }
