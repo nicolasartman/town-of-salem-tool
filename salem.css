@@ -41,6 +41,19 @@
   height: 6.66%;
 }
 
+/* Notch to note the implicit dividing line in the player actions area */
+.players:after {
+	bottom: 0;
+	left: 55%; /* 10% for the player control + 45% for the first action */
+	background-color: black;
+	content: " ";
+	height: 10px;
+	width: 2px;
+	position: absolute;
+	pointer-events: none;
+}
+
+
 .player.editable.is-dead .player-control.vote,
 .player.editable.is-dead .player-control.nomination,
 .player.is-dead .player-control.player-number {
@@ -54,6 +67,38 @@
 	border: 1px solid gray;
 }
 
+.player-behavior {
+	float: left;
+	width: 45%;
+	height: 100%;
+}
+
+.player-talk.is-chatty {
+	background-color: rgba(255, 255, 0, 0.25);
+}
+.player-talk.is-mafia-ally {
+	background-color: rgba(255, 0, 0, 0.25);
+}
+.player-talk.is-mafiaesque {
+	background-color: rgba(153, 103, 195, 0.25);
+}
+
+.player.has-trial-data .player-number {
+	box-shadow: inset 0px 0px 0px 3px black;
+}
+.player.abstained-from-voting-for-selected-player .player-number {
+	box-shadow: inset 0px 0px 0px 3px orange;	
+}
+
+.player-vote.has-voted-up {
+	background: rgba(0, 239, 255, 0.25);
+}
+.player-vote.has-abstained-from-lynch-vote {
+	background: rgba(0, 239, 255, 0.25);
+}
+.player-vote.has-voted-lynch {
+	background: rgba(255, 0, 0, 0.25);
+}
 
 .player-control.nomination, .player-control.vote {
 	background: black;
@@ -73,7 +118,7 @@
 }
 
 .player.player-being-edited .player-number {
-	box-shadow: inset 0px 0px 0px 3px black;
+	box-shadow: inset 0px 0px 0px 3px blue;
 }
 .player.is-town .player-number {
 	background: rgba(0, 255, 0, 0.25);
@@ -91,10 +136,9 @@
 	background: #4E4219;
 }
 
-.player-read {
-	margin-left: 30%;
+.player-talk {
   height: 100%;
 }
-.player.is-suspicious .player-read {
+.player.is-suspicious .player-talk {
   background-color: rgba(255, 255, 0, 0.25);
 }
