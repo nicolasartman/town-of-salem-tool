@@ -4,14 +4,13 @@
   "description": "A bookmarklet-bundled application that provides a game augmenting widget to track various pieces of info, such as player voting history and suspicious players",
   "main": "loader.js",
   "dependencies": {
-    "serve-static": "^1.9.1",
-    "uglify": "^0.1.1",
+    "browser-sync": "^2.7.1",
     "uglifyjs": "^2.4.10"
   },
   "devDependencies": {},
   "scripts": {
     "bookmarklet": "./node_modules/uglifyjs/bin/uglifyjs loader.js -o dist/salem.bookmarklet.js",
-    "server": "browser-sync start --server --port 8777 --files=\"*.js, *.css, *.html\""
+    "start": "browser-sync start --server --port 8777 --files=\"*.js, *.css, *.html\""
   },
   "repository": {
     "type": "git",
