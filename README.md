@@ -1,3 +1,5 @@
+# Deprecated
+
 # town-of-salem-tool
 
 This is a small bookmarklet widget that allows extremely fast recording of:
